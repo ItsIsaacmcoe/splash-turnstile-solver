@@ -85,7 +85,7 @@ def main():
 		exit(1)
 	elif len(sys.argv) == 2:
 		proxyServer=''
-	elif len(sys.argv) == 3:
+	elif len(sys.argv) >= 3:
 		proxyServer = sys.argv[2]
 	target_url = sys.argv[1]
 

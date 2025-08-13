@@ -20,7 +20,7 @@ Then pauses for 5 seconds (to handle cases where extra challenge Javascript is e
 If the page title changes at any point during this process, the function returns True and passes control back to `main()`
 ## Recovering cf_clearance cookie
 The CDP function `Network.getAllCookies` is used to grab all browser cookies. The response is parsed as a list for the value of `name`. If that value is `cf_clearance` it is printed.
-## Compromises
+## Challenges
 #### Turnstile checkbox in closed shadow DOM
 Checkbox inaccessible via Javascript. If accessible, its availability could be checked directly and in a more timely fashion. Could be clicked on using `.click` instead of issuing direct inputs.
 #### Javascript execution triggered by checkbox is well obfuscated.

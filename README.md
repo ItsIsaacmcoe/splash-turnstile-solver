@@ -1,5 +1,5 @@
 # splash-turnstile-solver
-Bypass splash screen turnstile CAPTCHA, built as a coding challenge
+Bypass splash screen turnstile CAPTCHA, built as a coding challenge for a job opportunity
 
 ## Requirements
 

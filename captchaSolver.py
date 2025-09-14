@@ -16,7 +16,7 @@ def connect_to_page(port):
 			if rsp[i]['title'] == 'Just a moment...':
 				return create_connection(rsp[i]['webSocketDebuggerUrl'])
 	except requests.exceptions.ConnectionError:
-		return False
+		return
 
 #Send formatted command to CDP server
 def send_CDP_command(websocket, command, params={}):

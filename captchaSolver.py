@@ -4,20 +4,19 @@ import time
 import json
 import requests
 import sys
+import websocket
 from websocket import create_connection
 
-#Find cdp endpoint page with title Just a moment...
-def connect_to_CDP(port, loops=40, polrate=0.2):
+#Return web-socket connection for page with title Just a moment...
+def connect_to_page(port):
 	dBugUrl = f'http://127.0.0.1:{port}/json'
-	for i in range(loops):
-		try:
-			rsp = requests.get(dBugUrl).json()
-			for i in range(len(rsp)):
-				if rsp[i]['title'] == 'Just a moment...':
-					return create_connection(rsp[i]['webSocketDebuggerUrl'])
-		except:
-			time.sleep(polrate)
-	return False
+	try:
+		rsp = requests.get(dBugUrl).json()
+		for i in range(len(rsp)):
+			if rsp[i]['title'] == 'Just a moment...':
+				return create_connection(rsp[i]['webSocketDebuggerUrl'])
+	except requests.exceptions.ConnectionError:
+		return False
 
 #Send formatted command to CDP server
 def send_CDP_command(websocket, command, params={}):
@@ -76,10 +75,10 @@ requestID = 0
 
 def main():
 
-#Chromium debugging port
+	#Chromium debugging port
 	dBugPort = 3000
 
-#Set site url and optional proxy server
+	#Set site url and optional proxy server
 	if len(sys.argv) == 1:
 		print("url required")
 		exit(1)
@@ -89,23 +88,25 @@ def main():
 		proxyServer = sys.argv[2]
 	target_url = sys.argv[1]
 
-#Launch chromium session with sandboxed data directory, incognito, proxy, and debugging enabled
+	#Launch chromium session with sand-boxed data directory, incognito, proxy, and debugging enabled
 	proc = subprocess.Popen(
 		['chromium', '--user-data-dir=/tmp/chrometmp', '--incognito', f'--remote-debugging-port={dBugPort}',
 		f'--remote-allow-origins=http://127.0.0.1:{dBugPort}', f'--proxy-server={proxyServer}', target_url],
 		stderr=DEVNULL)
-	time.sleep(1)
 
-	#Connect to CDP server
-	ws = connect_to_CDP(dBugPort)
-
-	#Ensure CDP connection was successful
-	if ws == False:
-		print('Unable to connect to a page with title "Just a moment..."')
+	#Connect to page via CDP web-socket
+	for i in range(5):
+		ws = connect_to_page(dBugPort)
+		if isinstance(ws, websocket._core.WebSocket):
+			break
+		else:
+			time.sleep(0.2)
+	if not isinstance(ws, websocket._core.WebSocket):
+		print("Failed to connect to splash style CAPTCHA page")
 		exit(1)
-	print('Established connection with page')
+	print("Connected to target page")
 
-	time.sleep(0.5)
+	time.sleep(1)
 
 	#Bypass turnstile captcha
 	results = click_turnstile(ws)

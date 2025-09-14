@@ -2,7 +2,7 @@
 
 This repository contains code developed as part of a technical challenge for a job screening process. The CAPTCHA-solving functionality was created to demonstrate technical skills in automation and problem-solving within a controlled, authorized environment.
 
-This code is designed to solve any turnstile captcha where the challenge takes up the entire page such as:
+This code prints a cf_clearance cookie for any site containing Cloudflare CAPTCHA where the challenge takes up the entire page such as:
 
 <img width="1920" height="989" alt="Screenshot From 2025-09-14 14-41-31" src="https://github.com/user-attachments/assets/ff31bd3e-67b3-4dd2-af0f-6c5234b176bd" />
 

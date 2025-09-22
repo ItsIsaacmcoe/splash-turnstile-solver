@@ -23,7 +23,6 @@ def connect_to_page(port):
 def send_CDP_command(websocket, command, params={}):
 	global requestID
 	requestID += 1
-	print(requestID)
 	websocket.send(json.dumps({'method': command,
 			'id': requestID,
 			'params': params}))

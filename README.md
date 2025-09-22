@@ -17,9 +17,7 @@ This code prints a cf_clearance cookie for any site containing Cloudflare CAPTCH
 ## Usage
 
 Run script from the command line:
-`python scriptname.py <url> [proxy]`
+`python scriptname.py {options} <url>`
 - `<url>`: The target URL to load in Chromium (required)
-- `[proxy]`: Optional proxy server string (e.g., `http://127.0.0.1:8080`)
-
 
 _Disclaimer: This code is provided for educational purposes only. Do not use without explicit authorization. The author is not responsible for any misuse or damage caused by this script_

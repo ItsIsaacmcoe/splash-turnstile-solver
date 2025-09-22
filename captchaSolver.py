@@ -1,5 +1,6 @@
 import subprocess
 from subprocess import DEVNULL
+import argparse
 import time
 import json
 import requests
@@ -22,6 +23,7 @@ def connect_to_page(port):
 def send_CDP_command(websocket, command, params={}):
 	global requestID
 	requestID += 1
+	print(requestID)
 	websocket.send(json.dumps({'method': command,
 			'id': requestID,
 			'params': params}))
@@ -63,6 +65,7 @@ def click_turnstile(websocket):
 			send_CDP_command(websocket, "Input.dispatchMouseEvent", {"type":"mousePressed","x":100,"y":100,"button":"left"})
 			time.sleep(0.1)
 			if check_title(websocket) == True:
+				time.sleep(0.1)
 				continue
 			else:
 				return True
@@ -78,20 +81,15 @@ def main():
 	#Chromium debugging port
 	dBugPort = 3000
 
-	#Set site url and optional proxy server
-	if len(sys.argv) == 1:
-		print("url required")
-		exit(1)
-	elif len(sys.argv) == 2:
-		proxyServer=''
-	elif len(sys.argv) >= 3:
-		proxyServer = sys.argv[2]
-	target_url = sys.argv[1]
+	parser = argparse.ArgumentParser(description="splash-screen style CAPTCHA solver")
+	parser.add_argument('url', type=str, help='Target URL')
+	parser.add_argument('--proxy', '-p', default='', help='Optional proxy server')
+	args = parser.parse_args()
 
 	#Launch chromium session with sand-boxed data directory, incognito, proxy, and debugging enabled
 	proc = subprocess.Popen(
 		['chromium', '--user-data-dir=/tmp/chrometmp', '--incognito', f'--remote-debugging-port={dBugPort}',
-		f'--remote-allow-origins=http://127.0.0.1:{dBugPort}', f'--proxy-server={proxyServer}', target_url],
+		f'--remote-allow-origins=http://127.0.0.1:{dBugPort}', f'--proxy-server={args.proxy}', args.url],
 		stderr=DEVNULL)
 
 	#Connect to page via CDP web-socket
